@@ -1,0 +1,19 @@
+# docker-compose.yml
+version: '3'
+services:
+  aotd_db:
+    image: "postgres" # use latest official postgres version
+    healthcheck:
+      test: [ "CMD", "pg_isready", "-q", "-d", "postgres", "-U", "root" ]
+      timeout: 45s
+      interval: 10s
+      retries: 10
+    env_file:
+      - ../db.env # configure postgres
+    volumes:
+      - db:/var/lib/postgresql/data/ # persist data even if container shuts down
+    ports:
+      - 5432:5432
+
+volumes:
+  db: # named volumes can be managed easier using docker-compose

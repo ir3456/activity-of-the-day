@@ -14,6 +14,15 @@ services:
       - db:/var/lib/postgresql/data/ # persist data even if container shuts down
     ports:
       - 5432:5432
+  aotd_app:
+    image: aotd_app
+    build:
+      context: ../
+      dockerfile: Dockerfile
+    env_file:
+      - ../config.env # configure postgres
+    volumes:
+      - ../:/app
 
 volumes:
   db: # named volumes can be managed easier using docker-compose

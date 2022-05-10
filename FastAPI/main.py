@@ -1,9 +1,11 @@
-from fastapi import Depends, FastAPI, HTTPException
 import os
+
 from sqlalchemy import create_engine
 from sqlalchemy.orm import Session, sessionmaker
 
-from . import models, crud, schemas
+from fastapi import Depends, FastAPI, HTTPException
+
+from . import crud, models, schemas
 
 # Database connection URL
 SQLALCHEMY_DATABASE_URL = "postgresql://{username}:{password}@{host}:{port}/{database}".format(
@@ -89,5 +91,3 @@ def get_constraint(constraint_id: int, db: Session = Depends(get_db)):
 @app.post("/constraints/{constraint_id}/response", response_model=schemas.Response)
 def create_response(response: schemas.ResponseCreate, constraint_id: int, db: Session = Depends(get_db)):
     return crud.create_response(db=db, response=response, constraint_id=constraint_id)
-
-

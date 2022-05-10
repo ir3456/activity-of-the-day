@@ -1,10 +1,4 @@
-from sqlalchemy import (
-    Column,
-    DateTime,
-    ForeignKey,
-    String,
-    Numeric,
-)
+from sqlalchemy import Column, DateTime, ForeignKey, String, Numeric
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
 from sqlalchemy.types import Boolean, Integer
@@ -18,7 +12,6 @@ class User(Base):
     id = Column(Integer, primary_key=True, autoincrement=True)
     phone = Column('phone', String(10))
     active = Column('active', Boolean)
-    notification_method = Column('notification_method', String)
 
     activities = relationship("Activity", back_populates="user")
 

@@ -2,6 +2,7 @@ from sqlalchemy.orm import Session
 
 from . import models, schemas
 
+
 # User
 def get_user(db: Session, user_id: int):
     return db.query(models.User).filter(models.User.id == user_id).first()
@@ -19,7 +20,7 @@ def create_user(db: Session, user: schemas.UserCreate):
     db.refresh(db_user)
     return db_user
 
-    
+
 # Activity
 def get_activity(db: Session, activity_id: int):
     return db.query(models.Activity).filter(models.Activity.id == activity_id).first()
@@ -41,7 +42,12 @@ def get_constraint(db: Session, constraint_id: int):
 
 def create_constraint(db: Session, constraint: schemas.ConstraintCreate, activity_id: int):
     # Add the constraint to the database
-    db_constraint = models.Constraint(metric=constraint.metric, minimum_value=constraint.minimum_value, maximum_value=constraint.maximum_value, activity_id=activity_id)
+    db_constraint = models.Constraint(
+        metric=constraint.metric,
+        minimum_value=constraint.minimum_value,
+        maximum_value=constraint.maximum_value,
+        activity_id=activity_id,
+    )
     db.add(db_constraint)
     db.commit()
     db.refresh(db_constraint)
@@ -51,7 +57,9 @@ def create_constraint(db: Session, constraint: schemas.ConstraintCreate, activit
 # Cosntraint
 def create_response(db: Session, response: schemas.ResponseCreate, constraint_id: int):
     # Add the constraint to the database
-    db_response = models.Response(name=response.response, minimum_value=response.date, constraint_id=constraint_id)
+    db_response = models.Response(
+        name=response.response, minimum_value=response.date, constraint_id=constraint_id
+    )
     db.add(db_response)
     db.commit()
     db.refresh(db_response)

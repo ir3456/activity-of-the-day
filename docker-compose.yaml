@@ -9,20 +9,20 @@ services:
       interval: 10s
       retries: 10
     env_file:
-      - ../db.env # configure postgres
-    volumes:
-      - db:/var/lib/postgresql/data/ # persist data even if container shuts down
+      - ./db.env # configure postgres
+    # volumes:
+    #   - db:/Users/isaac/Documents/Projects/activity-of-the-day/db/var/lib/postgresql/data/ # persist data even if container shuts down
     ports:
       - 5432:5432
   aotd_app:
     image: aotd_app
     build:
-      context: ../
+      context: ./
       dockerfile: Dockerfile
     env_file:
-      - ../config.env # configure postgres
+      - ./config.env # configure postgres
     volumes:
-      - ../:/app
+      - ./:/app
 
 volumes:
   db: # named volumes can be managed easier using docker-compose

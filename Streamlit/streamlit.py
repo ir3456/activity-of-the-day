@@ -1,9 +1,12 @@
+import logging
 import os
 
 import requests
 import streamlit as st
 
-REQUESTS_URL = os.environ["BASE_URL"]
+logging.basicConfig(filename="app.log", filemode="w", level=logging.DEBUG)
+
+REQUESTS_URL = os.environ["REQUESTS_URL"]
 # A session to be used for all HTTP requests
 session = requests.Session()
 
@@ -15,15 +18,16 @@ st.text_input("Enter your 10 digit phone number", key="user_phone", placeholder=
 if st.button("Submit Phone"):
     st.write("Adding user to db...")
 
-    user = session.post(
+    logging.debug(f"adding user with phone {st.session_state.user_phone}")
+    user = requests.post(
         url=f"{REQUESTS_URL}/users",
         data={
             "phone": st.session_state.user_phone,
-            "active": 1,
+            "active": True,
             "notification_method": "Twilio",
         },
     )
-
+    logging.debug("user added\n", user)
     st.write("User Submitted!")
 
 
@@ -165,7 +169,4 @@ with st.container():
 st.write("# Check the weather")
 
 if st.button("Check weather"):
-    st.write(
-        f"Based on today's weather forecast, it is a perfect day for \
-            {st.session_name.activity_name} at the following times: "
-    )
+    st.write(f"Based on today's weather forecast, it is a perfect day for {st.session_name.activity_name}")

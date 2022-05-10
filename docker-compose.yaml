@@ -1,6 +1,27 @@
 # docker-compose.yml
 version: '3'
+
 services:
+  aotd_frontend:
+    build: Streamlit
+    ports:
+      - 8501:8501
+    depends_on:
+      - aotd_backend
+    volumes:
+      - ./Streamlit:/app
+    environment:
+      REQUESTS_URL: http://aotd_backend:8000
+
+  aotd_backend:
+    build: FastAPI
+    ports:
+      - 8000:8000
+    env_file:
+      - ./config.env # configure postgres
+    volumes:
+      - ./FastAPI:/app
+
   aotd_db:
     image: "postgres" # use latest official postgres version
     healthcheck:
@@ -10,10 +31,9 @@ services:
       retries: 10
     env_file:
       - ./db.env # configure postgres
-    # volumes:
-    #   - db:/Users/isaac/Documents/Projects/activity-of-the-day/db/var/lib/postgresql/data/ # persist data even if container shuts down
     ports:
       - 5432:5432
+
   aotd_app:
     image: aotd_app
     build:

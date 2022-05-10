@@ -1,11 +1,13 @@
 import os
+import time
 
+import crud
+import models
+import schemas
 from sqlalchemy import create_engine
 from sqlalchemy.orm import Session, sessionmaker
 
 from fastapi import Depends, FastAPI, HTTPException
-
-from . import crud, models, schemas
 
 # Database connection URL
 SQLALCHEMY_DATABASE_URL = "postgresql://{username}:{password}@{host}:{port}/{database}".format(
@@ -16,8 +18,10 @@ SQLALCHEMY_DATABASE_URL = "postgresql://{username}:{password}@{host}:{port}/{dat
     database=os.environ["POSTGRES_DB"],
 )
 
-#
-engine = create_engine(SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False})
+
+# Gives the database time to initialize before connecting
+time.sleep(10)
+engine = create_engine(SQLALCHEMY_DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 models.Base.metadata.create_all(bind=engine)
@@ -35,8 +39,9 @@ def get_db():
 
 
 # User Path Operations
-@app.post("/users/", response_model=schemas.User)
+@app.post("/users", response_model=schemas.User)
 def create_user(user, db: Session = Depends(get_db)):
+    print("It got called")
     db_user = crud.get_user(db, user_phone=user.phone)
     if db_user:
         raise HTTPException(status_code=400, detail="User already exists with that phone number")
